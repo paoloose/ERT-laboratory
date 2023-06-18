@@ -1,5 +1,5 @@
-#import "template.typ": *
-#import "functions.typ": *
+#import "template.mod.typ": *
+#import "functions.mod.typ": *
 
 #show: article.with(
   title: "What is ERT?",
