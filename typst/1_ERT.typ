@@ -40,3 +40,9 @@ mathematical and physics principles.
 // Why the obtained resistivity is an apparent resistivity?
 
 == Why resistivity?
+
+// review: https://gpg.geosci.xyz/content/DC_resistivity/DC_physical_properties.html
+
+== ERT limitations
+
+== Hello
