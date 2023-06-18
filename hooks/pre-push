@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# This hook is called with the following parameters:
+#
+# $1 -- Name of the remote to which the push is being done
+# $2 -- URL to which the push is being done
+
+# To set this directory as your git hooks directory, run:
+#   git config core.hooksPath "hooks"
+
+edited_typst_files="$(git diff --name-only typst)"
+typst_dir="typst"
+out_dir="papers"
+
+# If no files have changed
+if [ -z "$edited_typst_files" ]; then exit 0; fi
+
+for file in $(ls $typst_dir); do
+    # skip non .typ files
+    if [ ! "${file##*.}" = "typ" ]; then continue; fi
+    # skip .mod.typ files for compilation
+    if [ "${file#*.}" = "mod.typ" ]; then continue; fi
+
+    # replace .mod.typ to .typ and prepend the out_dir
+    out_file="$(basename "papers/${file%%.*}").pdf"
+    typst compile "$typst_dir/$file" "$out_dir/$out_file"
+done
