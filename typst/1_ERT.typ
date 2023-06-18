@@ -38,3 +38,5 @@ The following document will discuss about some whys about ERT and its
 mathematical and physics principles.
 
 // Why the obtained resistivity is an apparent resistivity?
+
+== Why resistivity?
