@@ -31,12 +31,11 @@
   )
   show par: set block(spacing: 1.4em)
 
-  // Add padding to headings.
-  show heading: it => [
-    #pad(bottom: 0.75em, it.body)
-  ]
-
   show link: underline;
+
+  show emph: it => {
+    text(blue, it.body, style: "italic")
+  }
 
   // Configure page properties.
   set page(
@@ -45,26 +44,6 @@
     // The header always contains the book title on odd pages and
     // the chapter title on even pages, unless the page is one
     // the starts a chapter (the chapter title is obvious then).
-    header: locate(loc => {
-      // Are we on an odd page?
-      let i = counter(page).at(loc).first()
-      if calc.odd(i) {
-        return text(0.95em, smallcaps(title))
-      }
-
-      // Are we on a page that starts a chapter? (We also check
-      // the previous page because some headings contain pagebreaks.)
-      let all = query(heading, loc)
-      if all.any(it => it.location().page() in (i - 1, i)) {
-        return
-      }
-
-      // Find the heading of the section we are currently in.
-      let before = query(selector(heading).before(loc), loc)
-      if before != () {
-        align(right, text(0.95em, smallcaps(before.last().body)))
-      }
-    }),
   )
 
   body
