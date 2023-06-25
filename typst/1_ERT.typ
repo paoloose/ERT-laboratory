@@ -8,7 +8,7 @@
 
 = Electrical Resistivity Tomography
 
-Electrical Resistivity Tomography (ERT) is a #term[geophysical suvery], and
+Electrical Resistivity Tomography (ERT) is a #term[geophysical survey], and
 therefore, it energizes the earth in order to get some information about it.
 The main product of ERT is the visualization of the subsurface structure by
 looking at its resistivity distribution, and this is achieved this by injecting
@@ -70,7 +70,7 @@ materials.
   caption: [Electrical conductivity and resistivity of common rocks.],
 )
 
-Note that there is no absolute value for resistivity, in our measures,
+Note that there is no absolute value for resistivity. In our measures,
 resistivity will depend on many factors like:
 
 - Porosity of material (how much empty space it has), which increases

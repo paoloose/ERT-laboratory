@@ -38,8 +38,10 @@
 
   show link: underline;
 
+  set math.equation(numbering: "(1)")
+
   show emph: it => {
-    text(blue, it.body, style: "italic")
+    text(it.body, style: "italic")
   }
 
   // Configure page properties.
