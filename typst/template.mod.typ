@@ -12,7 +12,7 @@
   // Page properties
   set page(
     paper: paper,
-    margin: (bottom: 1.75cm, top: 2.25cm),
+    margin: (bottom: 1.75cm, top: 2.2cm)
   )
 
   // The first page
@@ -30,6 +30,11 @@
     justify: true
   )
   show par: set block(spacing: 1.4em)
+
+  // Add padding to headings.
+  show heading: it => [
+    #pad(bottom: 0.75em, it.body)
+  ]
 
   show link: underline;
 
