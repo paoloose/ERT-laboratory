@@ -57,16 +57,16 @@ Both resistivity and conductivity are _intensive properties_
   Not to be confused with their _extensive_ versions: resistance and
   conductance.
 ],
-which mans that they do not depend on the amount of material. This means that,
-by visualizing the subsurface resistivity distribution, we are also viewing at
-the material distribution, and we can easily distinguish between conductive and
-insulating materials (e.g. minerals and rocks).
+which means that they do not depend on the amount of material. Therefore, we can
+say that, by visualizing the subsurface resistivity distribution, we are also
+viewing at the material distribution, and we can easily distinguish between
+conductive and insulating materials (e.g. minerals and rocks).
 
 The figure below shows the resistivity range of some common subsurface
 materials.
 
 #figure(
-  image("../assets/resistivity_table.png"),
+  image("../assets/resistivity_table.png", width: 90%),
   caption: [Electrical conductivity and resistivity of common rocks.],
 )
 
