@@ -7,8 +7,8 @@
 
 remote=origin/main
 edited_typst_files="$(git diff --name-only --staged $remote -- typst)"
-typst_dir="typst"
-out_dir="papers"
+typst_dir="notes/typst"
+out_dir="notes/"
 
 # if no files have changed
 if [ -z "$edited_typst_files" ]; then

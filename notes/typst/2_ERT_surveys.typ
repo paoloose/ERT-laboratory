@@ -84,10 +84,33 @@ sectional area $J$ is proportional to the existing electric field $E$, where
 the conductivity $sigma$ is the constant of proportionality: current density
 increases within conductive regions, and decreases within resistive regions".
 
+== What do this injected current produce?
+
+The injected current produces
+
+// #figure(
+//   image("../assets/current_flow.png", width: 100%),
+//   caption: [
+//     The IP effect. The polarization is a result of the interaction between the
+//     injected current and the subsurface material.
+//   ],
+// ) <ip>
+
+
+In the subsurface there exist a phenomenon called "current crowding", where
+current flow lines are concentrated in areas of low resistivity. This is
+
 // TODO:
 /*
 Do this have anything to do with why we measure the potential difference?
-https://gpg.geosci.xyz/content/DC_resistivity/DC_basic_principles_equations.html
+
+Object in subsurface
+https://d3i71xaburhd42.cloudfront.net/af473b8a5a28cb9e646f9974df14e51052b85099/2-Figure1-1.png
+
+https://pdfs.semanticscholar.org/6258/96eeb53bed1b534b04ee6245e0a05a3010d2.pdf
+
+// ERT library in action
+https://hkex.gitlab.io/resipy/gui-in-action.html
 
 Roadmap:
 - understand the above question
@@ -99,5 +122,20 @@ Roadmap:
 
 Potential difference ($V$) is measured between two points, in this case, between
 electrodes M and N.
+
+// ERT dissertation:
+
+// - The problem: how do we study the subsurface? how can we visualize it?
+// - Presenting ERT
+// - How current flows in the subsurface
+// - Principios matemáticos del ERT (?)
+// - Introducción al ERT surveying
+// - Common electrode configuration
+// - The inverse problem and the forward problem
+// - ERT process as an algorithm (flow chart)
+// - Inversion techniques (finite element method)
+//   - discretisation of the subsurface "finite elements"
+// - Data interpretation
+// - Real cases
 
 #bibliography("bibliography.bib", style: "apa")

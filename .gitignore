@@ -1,2 +1,3 @@
 /.vscode
 /typst/*.pdf
+.venv/
