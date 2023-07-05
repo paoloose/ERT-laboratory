@@ -1,0 +1,59 @@
+.sidebar {
+  background-color: var(--sidebarBackground);
+  border-right: 1px solid var(--sidebarBorder);
+  min-height: calc(100% - var(--header-height));
+  max-height: calc(100% - var(--header-height));
+
+  min-width: var(--sidebar-width);
+}
+
+.tools {
+  button {
+    margin: 2px;
+    padding: 6px;
+  }
+}
+
+.resitivities {
+  display: flex;
+  flex-direction: column;
+
+  ul {
+    display: table;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+
+    li button {
+      width: 100%;
+      margin: 0;
+      display: flex;
+      border-radius: 0;
+
+      padding: 2px 4px;
+      font-size: small;
+      align-items: center;
+
+      div {
+        display: table-cell;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+      }
+
+      & .resistivity-value {
+        display: table-cell;
+        flex: 1;
+        text-align: left;
+        margin-right: 10px;
+      }
+
+      & .resistivity-name {
+        display: table-cell;
+        flex: 4;
+        text-align: left;
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+.app-container {
+  display: flex;
+  flex-direction: row;
+  min-height: calc(100% - var(--header-height));
+  max-height: calc(100% - var(--header-height));
+
+  --sidebar-width: 160px;
+}
+
+.main-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  width: 100%;
+}
+
+@media (max-width: 1440px) {
+  .main-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+

@@ -1,0 +1,11 @@
+.container {
+  display: grid;
+  place-content: center;
+
+  .canvas-input {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: white;
+  }
+}

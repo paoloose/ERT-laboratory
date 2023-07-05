@@ -1,0 +1,12 @@
+.output {
+  display: grid;
+  padding: 20px;
+  background-color: var(--contentBackground);
+  height: 100%;
+  place-content: center;
+
+  img {
+    border: 1px solid var(--boxBorder);
+    width: 100%;
+  }
+}
