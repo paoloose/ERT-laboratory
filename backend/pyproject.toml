@@ -1,0 +1,14 @@
+[project]
+name = "ert-cloud"
+version = "0.0.1"
+
+# note: pygimli should be documented
+dependencies = [
+  'celery == 5.3.1',
+  'flask == 2.3.2',
+  'celery[redis]',
+  'flask_socketio == 5.3.4',
+  'numpy == 1.25.0',
+  'matplotlib == 3.7.2'
+]
+requires-python = ">=3.10"
