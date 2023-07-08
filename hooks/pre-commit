@@ -6,9 +6,9 @@
 #   git config core.hooksPath "hooks"
 
 remote=origin/main
-edited_typst_files="$(git diff --name-only --staged $remote -- typst)"
 typst_dir="notes/typst"
 out_dir="notes/"
+edited_typst_files="$(git diff --name-only --staged $remote -- $typst_dir)"
 
 # if no files have changed
 if [ -z "$edited_typst_files" ]; then
