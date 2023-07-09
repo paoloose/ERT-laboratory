@@ -1,11 +1,13 @@
 import { Route } from 'wouter';
 import { ERTDrawingCanvas } from '@/components/ERTDrawingCanvas';
-import { ERTOutput } from '@/components/ERTOutput';
+import { ERTMeshOutput } from '@/components/ERTMeshOutput';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import { canvasConfig } from '@/stores/canvasStore';
-import { TabNavigator } from './TabNavigator';
 import styles from '@/styles/App.module.scss';
+import { TabNavigator } from '@/components/TabNavigator';
+import { ERTApparentOutput } from '@/components/ERTApparentOutput';
+import { ERTInversionOutput } from '@/components/ERTInversionOutput';
 
 function App() {
   return (
@@ -19,12 +21,19 @@ function App() {
             <Route path="/">
               <ERTDrawingCanvas initialState={canvasConfig} />
               <div>
-                <ERTOutput />
+                <ERTMeshOutput />
+              </div>
+            </Route>
+            <Route path="/aparentes">
+              <ERTDrawingCanvas initialState={canvasConfig} />
+              <div>
+                <ERTApparentOutput />
               </div>
             </Route>
             <Route path="/inversion">
+              <ERTDrawingCanvas initialState={canvasConfig} />
               <div>
-                Inversion
+                <ERTInversionOutput />
               </div>
             </Route>
           </div>

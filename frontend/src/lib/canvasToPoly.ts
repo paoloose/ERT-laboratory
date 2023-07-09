@@ -1,8 +1,30 @@
 import { SubsurfaceShape } from '@/stores/canvasStore';
+import { ERTCanvasConfig } from '@/types';
+
+type PolyData = [poly: string, newShapes: SubsurfaceShape[]];
 
 // See the .poly format specification:
 // https://www.cs.cmu.edu/~quake/triangle.poly.html
-export function canvasDataToPoly(shapes: SubsurfaceShape[], gridSize: number) {
+export function canvasDataToPoly(
+  shapes: SubsurfaceShape[],
+  canvasConfig: ERTCanvasConfig
+): PolyData {
+  // eslint-disable-next-line no-param-reassign
+  shapes = [
+    {
+      nodes: [
+        [0, 0],
+        [0, canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters],
+        [
+          canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters,
+          canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters
+        ],
+        [canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters, 0]
+      ],
+      resistivity: 150
+    },
+    ...shapes
+  ];
   // First line:
   // <# of vertices> <dimension (must be 2)> <# of attributes> <# of boundary markers (0 or 1)>
   // Following lines:
@@ -36,16 +58,21 @@ export function canvasDataToPoly(shapes: SubsurfaceShape[], gridSize: number) {
   // Optional following lines:
   // <region #> <x> <y> <attribute> <maximum area></maximum>
   const attributes: Array<[number, number, number, number]> = [] as any;
-  shapes.forEach((nodes, i) => {
-    const firstNode = nodes.nodes[0];
+  shapes.forEach((shape, i) => {
+    if (shape.resistivity === 150) {
+      attributes.push([99.99, 49.99, i + 1, 0]);
+      return;
+    }
+    const firstNode = shape.nodes[0];
+    // TODO: fix this trick
     attributes.push([firstNode[0] + 0.01, firstNode[1] + 0.01, i + 1, 0]);
   });
 
   // NOTE: we invert the y axis since the canvas has y=0 at the top
 
-  return `${vertices.length}\t2\t0\t1
+  return [`${vertices.length}\t2\t0\t1
 ${vertices.map(([x, y], i) => (
-    `${i}\t${x * gridSize}\t${-y * gridSize}\t0`
+    `${i}\t${x * canvasConfig.gridSizeMeters}\t${-y * canvasConfig.gridSizeMeters}\t0`
   )).join('\n')}
 ${segments.length}\t1
 ${segments.map(([a, b, marker], i) => (
@@ -54,7 +81,7 @@ ${segments.map(([a, b, marker], i) => (
 0
 ${attributes.length}
 ${attributes.map(([x, y, attribute, area], i) => (
-    `${i}\t${x * gridSize}\t${-y * gridSize}\t${attribute}\t${area}`
+    `${i}\t${x * canvasConfig.gridSizeMeters}\t${-y * canvasConfig.gridSizeMeters}\t${attribute}.0e+00\t${area}.0e+00`
   )).join('\n')}
-`;
+`, shapes];
 }

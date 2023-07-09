@@ -11,9 +11,12 @@
   li {
     font-size: 12px;
     min-width: 100px;
-    padding: 5px 10px;
+    height: 100%;
     a {
+      display: inline-block;
       color: #7e9499;
+      padding: 5px 10px;
+      height: 100%;
     }
     background-color: var(--boxBackground);
     border: 1px solid var(--boxBorder);

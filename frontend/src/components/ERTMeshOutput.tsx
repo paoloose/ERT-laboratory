@@ -4,7 +4,7 @@ import styles from '@/styles/ERTOutput.module.scss';
 import { polyparse } from '@/lib/polyParse';
 import { getCanvasContext2D } from '@/utils/canvas';
 import { Resistivity, Vec2Pair } from '@/types';
-import { canvasDataToPoly } from '@/lib/canvasPoly';
+import { canvasDataToPoly } from '@/lib/canvasToPoly';
 import { CANVAS_DATA_LOCAL_STORAGE_ID, canvasConfig, useCanvasStore } from '@/stores/canvasStore';
 
 const scale = (points: Vec2Pair[], sx: number, sy: number) => {
@@ -106,41 +106,12 @@ type MeshDataResponse = {
   image: string
 };
 
-export function ERTOutput() {
+export function ERTMeshOutput() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
-  useEffect(() => {
-    const ctx = getCanvasContext2D(canvasRef.current);
-    if (!ctx) return;
-    ctx.canvas.width = 800;
-    ctx.canvas.height = 400;
-    ctx.canvas.style.width = '400px';
-    ctx.canvas.style.height = '200px';
-
-    const { parsedShapes } = useCanvasStore.getState();
-
-    parsedShapes.unshift({
-      nodes: [
-        [0, 0],
-        [0, canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters],
-        [
-          canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters,
-          canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters
-        ],
-        [canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters, 0]
-      ],
-      resistivity: 150
-    });
-
-    const polyStr = canvasDataToPoly(parsedShapes, canvasConfig.gridSizeMeters);
-    const rhoMap: RhoMap = parsedShapes.map((shape, i) => [i + 1, shape.resistivity]);
-    draw(ctx, polyparse(polyStr));
-    debounceFetch(polyStr, rhoMap);
-  }, []);
-
   const debounceFetch = useMemo(() => debounce((polyStr: string, rhoMap: RhoMap) => {
-    console.log('fetching');
+    console.log(polyStr, JSON.stringify(rhoMap));
     fetch('http://127.0.0.1:5000/render', {
       method: 'POST',
       headers: {
@@ -152,12 +123,31 @@ export function ERTOutput() {
       })
     }).then((response) => response.json()).then((data: MeshDataResponse) => {
       imageRef.current!.src = data.image;
-      window.localStorage.setItem(
-        CANVAS_DATA_LOCAL_STORAGE_ID,
-        JSON.stringify(useCanvasStore.getState().canvasData)
-      );
-    }).catch(() => `backend is overloaded please be gentle`);
+      window.localStorage.setItem('firstTab', data.image);
+    }).catch(() => 'backend is overloaded please be gentle')
+      .finally(() => {
+        window.localStorage.setItem(
+          CANVAS_DATA_LOCAL_STORAGE_ID,
+          JSON.stringify(useCanvasStore.getState().canvasData)
+        );
+      });
   }, 500), []);
+
+  useEffect(() => {
+    const ctx = getCanvasContext2D(canvasRef.current);
+    if (!ctx) return;
+    ctx.canvas.width = 800;
+    ctx.canvas.height = 400;
+    ctx.canvas.style.width = '500px';
+    ctx.canvas.style.height = '250px';
+
+    const { parsedShapes } = useCanvasStore.getState();
+
+    const [polyStr, shapes] = canvasDataToPoly(parsedShapes, canvasConfig);
+    const rhoMap: RhoMap = shapes.map((shape, i) => [i + 1, shape.resistivity]);
+    draw(ctx, polyparse(polyStr));
+    debounceFetch(polyStr, rhoMap);
+  }, [debounceFetch]);
 
   useCanvasStore.subscribe((store) => {
     const ctx = getCanvasContext2D(canvasRef.current);
@@ -165,21 +155,8 @@ export function ERTOutput() {
 
     const { parsedShapes } = store;
 
-    parsedShapes.unshift({
-      nodes: [
-        [0, 0],
-        [0, canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters],
-        [
-          canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters,
-          canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters
-        ],
-        [canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters, 0]
-      ],
-      resistivity: 150
-    });
-
-    const polyStr = canvasDataToPoly(parsedShapes, canvasConfig.gridSizeMeters);
-    const rhoMap: RhoMap = parsedShapes.map((shape, i) => [i + 1, shape.resistivity]);
+    const [polyStr, shapes] = canvasDataToPoly(parsedShapes, canvasConfig);
+    const rhoMap: RhoMap = shapes.map((shape, i) => [i + 1, shape.resistivity]);
     draw(ctx, polyparse(polyStr));
     debounceFetch(polyStr, rhoMap);
   });
@@ -189,8 +166,8 @@ export function ERTOutput() {
       <canvas ref={canvasRef} />
       <img
         ref={imageRef}
-        src=""
-        alt="ERT inver"
+        src={window.localStorage.getItem('firstTab') ?? ''}
+        alt="Comienza a dibujar la subsuperficie!"
       />
     </section>
   );

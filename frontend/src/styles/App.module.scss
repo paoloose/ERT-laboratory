@@ -15,7 +15,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
-  height: calc(100% - 30px)
+  height: calc(100% - 30px);
+
+  img {
+    margin-top: 20px;
+    width: 500px;
+  }
 }
 
 @media (max-width: 1024px) {

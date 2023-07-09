@@ -183,7 +183,6 @@ export function polyparse(poly: string, papaConfig: PapaConf<any> = {}) {
     delimiter: '\t',
     download: false
   });
-  console.log({ results });
 
   if (results.errors.length) {
     console.error(results);

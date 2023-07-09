@@ -6,7 +6,7 @@ export const CANVAS_DATA_LOCAL_STORAGE_ID = 'canvas_data';
 
 export const canvasConfig: ERTCanvasConfig = {
   isDragging: false,
-  canvasDimensions: { x: 400, y: 200 },
+  canvasDimensions: { x: 500, y: 250 },
   worldSizeMeters: { x: 50, y: 25 }, // 50mx100m
   gridSizeMeters: 0.5, // 1m
   lastMouse: { x: 0, y: 0 }
@@ -14,12 +14,17 @@ export const canvasConfig: ERTCanvasConfig = {
 
 export type SubsurfaceShape = {
   resistivity: number,
-  nodes: Vec2Pair[];
+  nodes: Vec2Pair[]
 };
 
 export type DrawingState = {
   canvasData: Resistivity[][],
-  parsedShapes: SubsurfaceShape[]
+  parsedShapes: SubsurfaceShape[],
+  cacheLastOutput: {
+    firstTab: string,
+    secondTab: string,
+    thirdTab: string
+  }
 };
 
 export const useCanvasStore = create<DrawingState>()(
@@ -39,7 +44,12 @@ export const useCanvasStore = create<DrawingState>()(
 
     return {
       canvasData: initialCanvasData,
-      parsedShapes: canvasToShapes(initialCanvasData)
+      parsedShapes: canvasToShapes(initialCanvasData),
+      cacheLastOutput: {
+        firstTab: window.localStorage.getItem('firstTab') || '',
+        secondTab: window.localStorage.getItem('secondTab') || '',
+        thirdTab: window.localStorage.getItem('thirdTab') || ''
+      }
     };
   }
 );

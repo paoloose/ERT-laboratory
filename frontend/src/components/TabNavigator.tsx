@@ -10,7 +10,7 @@ export function TabNavigator() {
         </Link>
       </li>
       <li>
-        <Link href="/inversion">
+        <Link href="/aparentes">
           <a>Resistividades aparentes</a>
         </Link>
       </li>

@@ -7,7 +7,7 @@ import { DrawingState, useDrawingStore } from '@/stores/drawingStore';
 import { getColorFromResistivity } from '@/utils/colorMaps';
 import { yeet } from '@/utils/assertions';
 import styles from '@/styles/ERTCanvas.module.scss';
-import { SubsurfaceShape, useCanvasStore } from '@/stores/canvasStore';
+import { useCanvasStore } from '@/stores/canvasStore';
 import { CanvasPointerEvent, ERTCanvasConfig } from '@/types';
 import { canvasToShapes } from '@/lib/canvasToShapes';
 
@@ -55,12 +55,11 @@ export function ERTDrawingCanvas({ initialState }: { initialState: ERTCanvasConf
       const cell = getGridCell(mousePos, state);
 
       const ctx = getCanvasContext2D(canvasRef.current)!;
-      const resistivityBrush = drawingStore.current.selectedResistivity.value;
-      ctx.fillStyle = getColorFromResistivity(resistivityBrush);
-
       const { canvasData } = useCanvasStore.getState();
 
       if (drawingStore.current.selectedTool.name === 'pencil') {
+        const resistivityBrush = drawingStore.current.selectedResistivity.value;
+        ctx.fillStyle = getColorFromResistivity(resistivityBrush);
         const gridSizePixels = metersToPx(state.gridSizeMeters, state);
 
         // TODO: move this to a function and return if nothing is changing
@@ -82,13 +81,23 @@ export function ERTDrawingCanvas({ initialState }: { initialState: ERTCanvasConf
         });
       } else {
         const gridSizePixels = metersToPx(state.gridSizeMeters, state);
-        canvasData[cell.x][cell.y] = 0;
-        ctx.clearRect(
+        ctx.fillStyle = getColorFromResistivity(0);
+        if (canvasData[cell.y][cell.x] === 0) {
+          return;
+        }
+        canvasData[cell.y][cell.x] = 0;
+        ctx.fillRect(
           cell.x * gridSizePixels,
           cell.y * gridSizePixels,
           gridSizePixels,
           gridSizePixels
         );
+
+        const shapes = canvasToShapes(canvasData);
+
+        useCanvasStore.setState({
+          parsedShapes: shapes
+        });
       }
     }
     state.lastMouse.x = Math.ceil(e.pageX - e.currentTarget.offsetLeft);
@@ -103,8 +112,8 @@ export function ERTDrawingCanvas({ initialState }: { initialState: ERTCanvasConf
         onPointerMove={(handlePointerMove)}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerBlur}
-        onMouseDown={(e) => { if (e.detail > 1) e.preventDefault(); }}
         // Prevent selection on double click: https://stackoverflow.com/q/880512/18114046
+        onMouseDown={(e) => { if (e.detail > 1) e.preventDefault(); }}
       />
     </section>
   );
