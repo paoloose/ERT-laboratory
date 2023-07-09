@@ -16,7 +16,7 @@ export function ERTInversionOutput() {
   const debounceFetch = useMemo(() => debounce((polyStr: string, rhoMap: RhoMap) => {
     console.log(polyStr);
     console.log(rhoMap);
-    fetch('http://127.0.0.1:5000/invert', {
+    fetch(`${import.meta.env.VITE_ERT_BACKEND}/invert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

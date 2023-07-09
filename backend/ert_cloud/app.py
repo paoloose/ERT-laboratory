@@ -119,6 +119,7 @@ def get_apparent_sections():
 
         image = io.BytesIO()
         plt.savefig(image, format='png')
+        plt.close()
 
         return {
             'image': f'data:image/png;base64,{base64.b64encode(image.getvalue()).decode()}'
@@ -168,6 +169,7 @@ def invert_data():
 
         image = io.BytesIO()
         plt.savefig(image, format='png')
+        plt.close()
 
         return {
             'image': f'data:image/png;base64,{base64.b64encode(image.getvalue()).decode()}'

@@ -112,7 +112,7 @@ export function ERTMeshOutput() {
 
   const debounceFetch = useMemo(() => debounce((polyStr: string, rhoMap: RhoMap) => {
     console.log(polyStr, JSON.stringify(rhoMap));
-    fetch('http://127.0.0.1:5000/render', {
+    fetch(`${import.meta.env.VITE_ERT_BACKEND}/render`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

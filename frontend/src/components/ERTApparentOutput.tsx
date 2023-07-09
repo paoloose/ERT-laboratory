@@ -16,7 +16,7 @@ export function ERTApparentOutput() {
   const debounceFetch = useMemo(() => debounce((polyStr: string, rhoMap: RhoMap) => {
     console.log(polyStr);
     console.log(rhoMap);
-    fetch('http://127.0.0.1:5000/apparent', {
+    fetch(`${import.meta.env.VITE_ERT_BACKEND}/apparent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
