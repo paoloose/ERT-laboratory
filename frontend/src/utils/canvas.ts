@@ -1,4 +1,4 @@
-import { CanvasPointerEvent, ERTCanvas, Vec2 } from '@/types';
+import { CanvasPointerEvent, ERTCanvasConfig, Vec2 } from '@/types';
 
 export function getCanvasContext2D(
   canvas: HTMLCanvasElement | null
@@ -16,7 +16,7 @@ export function getRelativeMousePos(e: CanvasPointerEvent) {
   };
 }
 
-export function getGridCell(mouseRelativePos: Vec2, state: ERTCanvas): Vec2 {
+export function getGridCell(mouseRelativePos: Vec2, state: ERTCanvasConfig): Vec2 {
   return {
     x: Math.floor(
       (mouseRelativePos.x / state.canvasDimensions.x)
@@ -29,6 +29,6 @@ export function getGridCell(mouseRelativePos: Vec2, state: ERTCanvas): Vec2 {
   };
 }
 
-export function metersToPx(meters: number, state: ERTCanvas) {
+export function metersToPx(meters: number, state: ERTCanvasConfig) {
   return (state.canvasDimensions.x / state.worldSizeMeters.x) * meters;
 }

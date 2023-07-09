@@ -3,8 +3,9 @@ import { debounce } from 'debounce';
 import styles from '@/styles/ERTOutput.module.scss';
 import { polyparse } from '@/lib/polyParse';
 import { getCanvasContext2D } from '@/utils/canvas';
-import { SubsurfaceShape, useCanvasStore } from '@/stores/canvasStore';
 import { Resistivity, Vec2Pair } from '@/types';
+import { canvasDataToPoly } from '@/lib/canvasPoly';
+import { CANVAS_DATA_LOCAL_STORAGE_ID, canvasConfig, useCanvasStore } from '@/stores/canvasStore';
 
 const scale = (points: Vec2Pair[], sx: number, sy: number) => {
   if (!points) return;
@@ -17,11 +18,11 @@ const scale = (points: Vec2Pair[], sx: number, sy: number) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const draw = (ctx: CanvasRenderingContext2D, data: ReturnType<typeof polyparse>) => {
   const points = data?.pointlist;
   const segments = data?.segmentlist;
   const holes = data?.holelist;
-  console.log({ points, segments, holes });
 
   if (!points || !segments || !holes) return;
 
@@ -100,65 +101,6 @@ const draw = (ctx: CanvasRenderingContext2D, data: ReturnType<typeof polyparse>)
   ctx.restore();
 };
 
-// See the .poly format specification:
-// https://www.cs.cmu.edu/~quake/triangle.poly.html
-function canvasDataToPoly(shapes: SubsurfaceShape[]) {
-  // First line:
-  // <# of vertices> <dimension (must be 2)> <# of attributes> <# of boundary markers (0 or 1)>
-  // Following lines:
-  // <vertex #> <x> <y> [attributes] [boundary marker]
-  const vertices = shapes.flatMap((shape) => shape.nodes);
-
-  // One line:
-  // <# of segments> <# of boundary markers (0 or 1)>
-  // Following lines:
-  // <segment #> <endpoint> <endpoint> [boundary marker]
-  const segments: Array<[number, number, number]> = [] as any;
-  let shapeIndex = 0;
-  let nodeIndex = 0;
-  let tailNode = 0;
-  for (let i = 0; i < vertices.length; i++) {
-    if (nodeIndex++ === shapes[shapeIndex].nodes.length - 1) {
-      segments.push([i, tailNode, shapeIndex]);
-      tailNode = i + 1;
-      nodeIndex = 0;
-      shapeIndex += 1;
-      continue;
-    }
-    segments.push([i, i + 1, shapeIndex]);
-  }
-
-  // One line: <# of holes>
-  // (holes are empty for PyGIMLi)
-
-  // Optional line:
-  // <# of regional attributes and/or area constraints>
-  // Optional following lines:
-  // <region #> <x> <y> <attribute> <maximum area></maximum>
-  const attributes: Array<[number, number, number, number]> = [] as any;
-  shapes.forEach((nodes, i) => {
-    const firstNode = nodes.nodes[0];
-    attributes.push([firstNode[0] + 0.01, firstNode[1] + 0.01, i + 1, 0]);
-  });
-
-  // NOTE: we invert the y axis since the canvas has y=0 at the top
-
-  return `${vertices.length}\t2\t0\t1
-${vertices.map(([x, y], i) => (
-    `${i}\t${x}\t${-y}\t0`
-  )).join('\n')}
-${segments.length}\t1
-${segments.map(([a, b, marker], i) => (
-    `${i}\t${a}\t${b}\t${marker}`
-  )).join('\n')}
-0
-${attributes.length}
-${attributes.map(([x, y, attribute, area], i) => (
-    `${i}\t${x}\t${-y}\t${attribute}\t${area}`
-  )).join('\n')}
-`;
-}
-
 type RhoMap = Array<[number, Resistivity]>;
 type MeshDataResponse = {
   image: string
@@ -171,9 +113,30 @@ export function ERTOutput() {
   useEffect(() => {
     const ctx = getCanvasContext2D(canvasRef.current);
     if (!ctx) return;
-    ctx.canvas.width = 360;
-    ctx.canvas.height = 320;
-    // loadPoly(ctx, 'https://brunoimbrizi.github.io/poly-parse/demo/assets/A.poly');
+    ctx.canvas.width = 800;
+    ctx.canvas.height = 400;
+    ctx.canvas.style.width = '400px';
+    ctx.canvas.style.height = '200px';
+
+    const { parsedShapes } = useCanvasStore.getState();
+
+    parsedShapes.unshift({
+      nodes: [
+        [0, 0],
+        [0, canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters],
+        [
+          canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters,
+          canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters
+        ],
+        [canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters, 0]
+      ],
+      resistivity: 150
+    });
+
+    const polyStr = canvasDataToPoly(parsedShapes, canvasConfig.gridSizeMeters);
+    const rhoMap: RhoMap = parsedShapes.map((shape, i) => [i + 1, shape.resistivity]);
+    draw(ctx, polyparse(polyStr));
+    debounceFetch(polyStr, rhoMap);
   }, []);
 
   const debounceFetch = useMemo(() => debounce((polyStr: string, rhoMap: RhoMap) => {
@@ -189,31 +152,41 @@ export function ERTOutput() {
       })
     }).then((response) => response.json()).then((data: MeshDataResponse) => {
       imageRef.current!.src = data.image;
-    });
+      window.localStorage.setItem(
+        CANVAS_DATA_LOCAL_STORAGE_ID,
+        JSON.stringify(useCanvasStore.getState().canvasData)
+      );
+    }).catch(() => `backend is overloaded please be gentle`);
   }, 500), []);
 
   useCanvasStore.subscribe((store) => {
-    // const ctx = getCanvasContext2D(canvasRef.current);
-    // if (!ctx) return;
+    const ctx = getCanvasContext2D(canvasRef.current);
+    if (!ctx) return;
 
     const { parsedShapes } = store;
-    const polyStr = canvasDataToPoly(parsedShapes);
-    const rhoMap: RhoMap = parsedShapes.map((shape, i) => [i + 1, shape.resistivity]);
 
-    // draw(ctx, polyparse(polyStr));
-    // fetchMesh(polyStr, rhoMap).then
-    console.log('suscribing fired');
-    console.log(polyStr);
+    parsedShapes.unshift({
+      nodes: [
+        [0, 0],
+        [0, canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters],
+        [
+          canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters,
+          canvasConfig.worldSizeMeters.y / canvasConfig.gridSizeMeters
+        ],
+        [canvasConfig.worldSizeMeters.x / canvasConfig.gridSizeMeters, 0]
+      ],
+      resistivity: 150
+    });
+
+    const polyStr = canvasDataToPoly(parsedShapes, canvasConfig.gridSizeMeters);
+    const rhoMap: RhoMap = parsedShapes.map((shape, i) => [i + 1, shape.resistivity]);
+    draw(ctx, polyparse(polyStr));
     debounceFetch(polyStr, rhoMap);
   });
 
   return (
     <section className={styles.output}>
-      {/* <img
-        src="https://www2.geo.uni-bonn.de/~wagner/pg/_images/sphx_glr_plot_01_ert_2d_mod_inv_thumb.png"
-        alt=""
-      /> */}
-      {/* <canvas ref={canvasRef} /> */}
+      <canvas ref={canvasRef} />
       <img
         ref={imageRef}
         src=""

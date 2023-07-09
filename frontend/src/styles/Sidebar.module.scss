@@ -5,13 +5,40 @@
   max-height: calc(100% - var(--header-height));
 
   min-width: var(--sidebar-width);
+  font-size: 11px;
+}
+
+.toggles {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+  padding-left: 8px;
+  margin-bottom: 10px;
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+  }
 }
 
 .tools {
-  button {
-    margin: 2px;
-    padding: 6px;
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    padding: 2px 2px;
+
+    button {
+      text-align: left;
+      display: inline-block;
+      padding-left: 15px;
+      width: 100%;
+    }
   }
+
 }
 
 .resitivities {
@@ -46,13 +73,15 @@
         display: table-cell;
         flex: 1;
         text-align: left;
-        margin-right: 10px;
+        min-width: 50px;
+        font-size: 10px;
       }
 
       & .resistivity-name {
         display: table-cell;
         flex: 4;
         text-align: left;
+        font-size: 11px;
       }
     }
   }

@@ -7,23 +7,26 @@ export function Sidebar() {
 
   return (
     <aside className={styles.sidebar}>
-      <section>
-        Ver grid
-        <input id="show-grid" type="checkbox" />
+      <section className={styles.toggles}>
+        <div>
+          Ver grid
+          <input id="show-grid" type="checkbox" />
+        </div>
       </section>
       <section className={styles.tools}>
         {
           drawing.tools.map((tool) => (
-            <button
-              type="button"
-              key={tool.name}
-              onClick={() => drawing.setTool(tool.name)}
-              style={{ outline: tool === drawing.selectedTool ? '2px solid #30406b' : undefined }}
-            >
-              {tool.icon}
-              {' '}
-              {tool.name}
-            </button>
+            <li key={tool.name}>
+              <button
+                type="button"
+                onClick={() => drawing.setTool(tool.name)}
+                style={{ outline: tool === drawing.selectedTool ? '2px solid #323A50' : undefined }}
+              >
+                {tool.icon}
+                {' '}
+                {tool.displayName}
+              </button>
+            </li>
           ))
         }
       </section>
@@ -36,7 +39,7 @@ export function Sidebar() {
                 <button
                   type="button"
                   onClick={() => drawing.setResistivity(resistivity)}
-                  style={{ outline: resistivity.value === drawing.selectedResistivity.value ? '2px solid #30406b' : undefined }}
+                  style={{ outline: resistivity.value === drawing.selectedResistivity.value ? '2px solid #323A50' : undefined }}
                 >
                   <div
                     style={{ backgroundColor: getColorFromResistivity(resistivity.value) }}

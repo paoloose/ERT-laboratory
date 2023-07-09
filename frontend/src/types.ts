@@ -10,7 +10,7 @@ export type Resistivity = number;
 
 export type Vec2Pair = [x: number, y: number];
 
-export interface ERTCanvas {
+export interface ERTCanvasConfig {
   isDragging: boolean;
   canvasDimensions: Vec2;
   /**

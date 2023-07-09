@@ -4,11 +4,13 @@ import { Resistivity } from '@/types';
 
 // All tools classes will implement CanvasToolBase
 interface CanvasToolBase {
+  readonly displayName: string;
   readonly name: string;
   readonly icon: string;
 }
 
 export class PencilTool implements CanvasToolBase {
+  readonly displayName = 'Lapiz de resistividad';
   readonly name = 'pencil';
   readonly icon = '✏️';
   sizeMeters = 1;
@@ -16,6 +18,7 @@ export class PencilTool implements CanvasToolBase {
 
 // NOTE: when hot-reloading this, resitivity colors change without sense
 export class EraserTool implements CanvasToolBase {
+  readonly displayName = 'Borrador';
   readonly name = 'eraser';
   readonly icon = '🧽';
   sizeMeters = 2;
@@ -48,10 +51,14 @@ export const useDrawingStore = create<DrawingState>()(
   (set, get) => {
     const initialTools = [new PencilTool(), new EraserTool()];
     const initialResistivities = [
-      { name: 'limestone', value: 600 },
-      { name: 'clay', value: 500 },
-      { name: 'sand', value: 200 },
-      { name: 'water', value: 50 }
+      { name: 'Roca', value: 1700 },
+      { name: 'Laterita', value: 1200 },
+      { name: 'Caliza', value: 600 },
+      { name: 'Arcilla', value: 500 },
+      { name: 'Arena', value: 200 },
+      { name: 'Agua', value: 50 },
+      { name: 'Oro (Au)', value: 0.0244 },
+      { name: 'Cobre (Cu)', value: 0.068 }
     ];
     const INITIAL_TOOL = initialTools[0].name;
     const INITIAL_COLOR = initialResistivities[0].value;

@@ -1,5 +1,9 @@
 .header {
+  display: flex;
   background-color: var(--headerBackground);
   border-bottom: 1px solid var(--headerBorder);
   height: var(--header-height);
+
+  align-items: center;
+  margin-left: 10px;
 }
