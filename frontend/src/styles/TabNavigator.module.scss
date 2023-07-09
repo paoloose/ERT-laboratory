@@ -1,0 +1,21 @@
+
+.navigator-bar {
+  display: flex;
+  list-style: none;
+  height: 30px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: var(--boxBackground);
+
+  li {
+    font-size: 12px;
+    min-width: 100px;
+    padding: 5px 10px;
+    a {
+      color: #7e9499;
+    }
+    background-color: var(--boxBackground);
+    border: 1px solid var(--boxBorder);
+  }
+}

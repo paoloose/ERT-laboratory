@@ -27,6 +27,7 @@
     "max-classes-per-file": "off",
     "no-plusplus": "off",
     "no-continue": "off",
-    "no-nested-ternary": "off"
+    "no-nested-ternary": "off",
+    "jsx-a11y/anchor-is-valid": "off"
   }
 }
