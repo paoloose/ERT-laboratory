@@ -1,15 +1,16 @@
-import { ERTCanvas } from '@/components/ERTCanvas';
+import { ERTDrawingCanvas } from '@/components/ERTDrawingCanvas';
 import { ERTOutput } from '@/components/ERTOutput';
 import { Header } from '@/components/Header';
 import { Sidebar } from '@/components/Sidebar';
 import styles from '@/styles/App.module.scss';
+import { ERTCanvas } from '@/types';
 
-const canvasState: ERTCanvas = {
+const canvasInitialState: ERTCanvas = {
   isDragging: false,
-  world_size: { x: 420, y: 340 },
-  grid: { x: 42, y: 34 },
-  last_mouse: { x: 0, y: 0 },
-  pixe_size: 10
+  canvasDimensions: { x: 400, y: 200 },
+  worldSizeMeters: { x: 100, y: 50 }, // 50mx100m
+  gridSizeMeters: 1.0, // 1m
+  lastMouse: { x: 0, y: 0 }
 };
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
       <div className={styles.appContainer}>
         <Sidebar />
         <main className={styles.mainWrapper}>
-          <ERTCanvas initialState={canvasState} />
+          <ERTDrawingCanvas initialState={canvasInitialState} />
           <div>
             <ERTOutput />
           </div>

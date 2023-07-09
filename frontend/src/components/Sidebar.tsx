@@ -18,7 +18,7 @@ export function Sidebar() {
               type="button"
               key={tool.name}
               onClick={() => drawing.setTool(tool.name)}
-              style={{ outline: tool === drawing.selected_tool ? '2px solid #30406b' : undefined }}
+              style={{ outline: tool === drawing.selectedTool ? '2px solid #30406b' : undefined }}
             >
               {tool.icon}
               {' '}
@@ -36,7 +36,7 @@ export function Sidebar() {
                 <button
                   type="button"
                   onClick={() => drawing.setResistivity(resistivity)}
-                  style={{ outline: resistivity.value === drawing.selected_resistivity.value ? '2px solid #30406b' : undefined }}
+                  style={{ outline: resistivity.value === drawing.selectedResistivity.value ? '2px solid #30406b' : undefined }}
                 >
                   <div
                     style={{ backgroundColor: getColorFromResistivity(resistivity.value) }}

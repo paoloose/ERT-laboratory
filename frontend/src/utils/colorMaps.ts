@@ -1,12 +1,13 @@
 import colormap from '@/data/color_maps.json';
 import { useDrawingStore } from '@/stores/drawingStore';
 import { yeet } from '@/utils/assertions';
+import { Resistivity } from '@/types';
 
 const COLOR_MAP = colormap.Spectral.reverse();
 
-const colorsDict: Map<number, string> = new Map();
+const colorsDict: Map<Resistivity, string> = new Map();
 
-export function getColorFromResistivity(resistivity: number) {
+export function getColorFromResistivity(resistivity: Resistivity) {
   if (colorsDict.has(resistivity)) {
     return colorsDict.get(resistivity) ?? yeet('unreachable');
   }
