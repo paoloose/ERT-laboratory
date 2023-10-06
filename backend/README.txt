@@ -5,5 +5,6 @@ $ python setup.py
 
 Install pygimli manually from source: https://www.pygimli.org/compilation.html#sec-build
 
-The rabbitmq server is not configured to work. The backend is curently
-behind a django server and the rabbitmq server is not used.
+The rabbitmq server is configured to work, however, is currently not plugged into the main application.
+
+The Flask server doesn't connect to rabbitmq by default.
